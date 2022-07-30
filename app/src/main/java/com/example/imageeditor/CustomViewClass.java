@@ -4,13 +4,23 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
+import android.graphics.Shader;
+import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.annotation.RequiresApi;
 
 public class CustomViewClass extends View {
 
@@ -18,10 +28,15 @@ public class CustomViewClass extends View {
     private Canvas destCanvas = new Canvas();
     private Paint paint = new Paint();
     private Path destPath = new Path();
+    private Matrix matrix = new Matrix();
+
+    private Bitmap bmImage = null;
+
+    private Bitmap bitmap;
     public CustomViewClass(Context context) {
         super(context);
         Log.v("@@@@", "constructor");
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_lights);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_lights);
         destBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         destCanvas.setBitmap(destBitmap);
         destCanvas.drawBitmap(bitmap, 0, 0, null);
@@ -38,10 +53,11 @@ public class CustomViewClass extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         Log.v("@@@@", "ondraw");
-        destCanvas.drawPath(destPath, paint);
+        destCanvas.drawPath(destPath,paint);
         canvas.drawBitmap(destBitmap, 0,0,null);
         super.onDraw(canvas);
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -50,9 +66,12 @@ public class CustomViewClass extends View {
 
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
+                Log.v("@@@@", "ACTION_DOWN");
                 destPath.moveTo(xPos, yPos);
+                //destPath.rewind();
                 break;
             case MotionEvent.ACTION_MOVE:
+                Log.v("@@@@", "ACTION_MOVE");
                 destPath.lineTo(xPos, yPos);
                 break;
             default:
@@ -61,5 +80,10 @@ public class CustomViewClass extends View {
 
         invalidate();
         return  true;
+    }
+
+
+    public void invert(){
+
     }
 }
