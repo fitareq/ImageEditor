@@ -22,6 +22,9 @@ import android.view.View;
 
 import androidx.annotation.RequiresApi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CustomViewClass extends View {
 
     private Bitmap destBitmap;
@@ -32,6 +35,8 @@ public class CustomViewClass extends View {
 
     private Bitmap bmImage = null;
 
+    List<Integer> pixels = new ArrayList<>();
+
     private Bitmap bitmap;
     public CustomViewClass(Context context) {
         super(context);
@@ -39,15 +44,16 @@ public class CustomViewClass extends View {
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_lights);
         destBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         destCanvas.setBitmap(destBitmap);
-        destCanvas.drawBitmap(bitmap, 0, 0, null);
+        destCanvas.drawBitmap(bitmap, 10, 10, paint);
 
-        paint.setAlpha(20);
+        paint.setAlpha(100);
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeWidth(50);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+        paint.setFilterBitmap(true);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
     }
 
     @Override
@@ -55,7 +61,6 @@ public class CustomViewClass extends View {
         Log.v("@@@@", "ondraw");
         destCanvas.drawPath(destPath,paint);
         canvas.drawBitmap(destBitmap, 0,0,null);
-        super.onDraw(canvas);
     }
 
 
@@ -73,6 +78,7 @@ public class CustomViewClass extends View {
             case MotionEvent.ACTION_MOVE:
                 Log.v("@@@@", "ACTION_MOVE");
                 destPath.lineTo(xPos, yPos);
+                pixels.add(bitmap.getPixel((int)xPos, (int) yPos));
                 break;
             default:
                     return false;
@@ -84,6 +90,7 @@ public class CustomViewClass extends View {
 
 
     public void invert(){
+
 
     }
 }
