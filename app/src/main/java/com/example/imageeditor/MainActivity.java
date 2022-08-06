@@ -19,10 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         CustomViewClass customViewClass = new CustomViewClass(this);
-        DrawingView drawingView = new DrawingView(this);
-        //mainContainer.addView(drawingView);
         mainContainer.addView(customViewClass);
-
         button.setOnClickListener(view -> {
             customViewClass.invert();
         });

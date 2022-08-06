@@ -31,34 +31,26 @@ public class CustomViewClass extends View {
     private Canvas destCanvas = new Canvas();
     private Paint paint = new Paint();
     private Path destPath = new Path();
-    private Matrix matrix = new Matrix();
-
-    private Bitmap bmImage = null;
-
-    List<Integer> pixels = new ArrayList<>();
 
     private Bitmap bitmap;
     public CustomViewClass(Context context) {
         super(context);
-        Log.v("@@@@", "constructor");
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_lights);
         destBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         destCanvas.setBitmap(destBitmap);
         destCanvas.drawBitmap(bitmap, 10, 10, paint);
 
-        paint.setAlpha(100);
+        paint.setAlpha(0);
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeWidth(50);
-        paint.setFilterBitmap(true);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.v("@@@@", "ondraw");
         destCanvas.drawPath(destPath,paint);
         canvas.drawBitmap(destBitmap, 0,0,null);
     }
@@ -71,14 +63,10 @@ public class CustomViewClass extends View {
 
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                Log.v("@@@@", "ACTION_DOWN");
                 destPath.moveTo(xPos, yPos);
-                //destPath.rewind();
                 break;
             case MotionEvent.ACTION_MOVE:
-                Log.v("@@@@", "ACTION_MOVE");
                 destPath.lineTo(xPos, yPos);
-                pixels.add(bitmap.getPixel((int)xPos, (int) yPos));
                 break;
             default:
                     return false;
